@@ -70,3 +70,21 @@ contract Tenure {
     }
 
     modifier whenNotReentrant() {
+        if (_reentrancyLock != 0) revert Tnr_ReentrancyBlock();
+        _reentrancyLock = 1;
+        _;
+        _reentrancyLock = 0;
+    }
+
+    function curator() external view returns (address) {
+        return _curator;
+    }
+
+    function registerPiece(bytes32 manifestHash) external payable whenNotReentrant {
+        if (manifestHash == bytes32(0)) revert Tnr_ManifestHashZero();
+        if (msg.value != REGISTRATION_FEE) revert Tnr_InvalidPaymentAmount();
+        if (_nextPieceId > MAX_REGISTERED_PIECES) revert Tnr_MaxPiecesReached();
+
+        uint256 pieceId = _nextPieceId;
+        unchecked {
+            _nextPieceId++;
