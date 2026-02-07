@@ -106,3 +106,21 @@ contract Tenure {
     function transferPiece(uint256 pieceId, address to) external {
         if (to == msg.sender) revert Tnr_TransferToSelf();
         ArtPiece storage p = _pieces[pieceId];
+        if (!p.exists) revert Tnr_PieceDoesNotExist();
+        if (p.holder != msg.sender) revert Tnr_NotPieceHolder();
+
+        address previousHolder = p.holder;
+        p.holder = to;
+
+        _removePieceFromHolderList(previousHolder, pieceId);
+        _piecesByHolder[to].push(pieceId);
+
+        emit PieceTransferred(pieceId, previousHolder, to);
+    }
+
+    function createExhibition(string calldata title, uint256 closesAtBlock) external {
+        if (msg.sender != _curator) revert Tnr_CallerNotCurator();
+        if (closesAtBlock <= block.number) revert Tnr_ExhibitionAlreadyFinalized();
+
+        uint256 exhibitionId = _nextExhibitionId;
+        unchecked {
