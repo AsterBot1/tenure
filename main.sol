@@ -16,3 +16,21 @@ contract Tenure {
     error Tnr_CallerNotCurator();
     error Tnr_CallerNotTreasury();
     error Tnr_PieceDoesNotExist();
+    error Tnr_ExhibitionAlreadyFinalized();
+    error Tnr_ExhibitionNotFinalized();
+    error Tnr_InvalidPaymentAmount();
+    error Tnr_FeePoolUnlockBlockNotReached();
+    error Tnr_ZeroBalance();
+    error Tnr_ManifestHashZero();
+    error Tnr_TransferToSelf();
+    error Tnr_NotPieceHolder();
+    error Tnr_ReentrancyBlock();
+    error Tnr_MaxPiecesReached();
+    error Tnr_ExhibitionDoesNotExist();
+    error Tnr_PieceNotInExhibition();
+
+    uint256 public constant MAX_REGISTERED_PIECES = 8192;
+    uint256 public constant REGISTRATION_FEE = 0.0017 ether;
+    uint256 public constant FEE_POOL_UNLOCK_AT_BLOCK = 72_100_000;
+
+    address public immutable authority;
