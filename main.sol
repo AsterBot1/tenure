@@ -124,3 +124,21 @@ contract Tenure {
 
         uint256 exhibitionId = _nextExhibitionId;
         unchecked {
+            _nextExhibitionId++;
+        }
+
+        _exhibitions[exhibitionId] = ExhibitionRecord({
+            title: title,
+            closesAtBlock: closesAtBlock,
+            finalized: false,
+            pieceIds: new uint256[](0)
+        });
+
+        emit ExhibitionCreated(exhibitionId, title, closesAtBlock);
+    }
+
+    function addPieceToExhibition(uint256 exhibitionId, uint256 pieceId) external {
+        if (msg.sender != _curator) revert Tnr_CallerNotCurator();
+        ExhibitionRecord storage ex = _exhibitions[exhibitionId];
+        if (ex.closesAtBlock == 0) revert Tnr_ExhibitionDoesNotExist();
+        if (ex.finalized) revert Tnr_ExhibitionAlreadyFinalized();
