@@ -52,3 +52,21 @@ contract Tenure {
 
     struct ExhibitionRecord {
         string title;
+        uint256 closesAtBlock;
+        bool finalized;
+        uint256[] pieceIds;
+    }
+
+    mapping(uint256 => ArtPiece) private _pieces;
+    mapping(uint256 => ExhibitionRecord) private _exhibitions;
+    mapping(address => uint256[]) private _piecesByHolder;
+    mapping(uint256 => mapping(uint256 => bool)) private _exhibitionContainsPiece;
+
+    constructor() {
+        authority = 0x1a7F3e9b2C4d6E8f0A2B4c6D8e0F2A4B6C8D0E2;
+        treasury = 0x5c9E2a1F8b7D6e5C4B3A2F1E0D9C8B7A6F5E4D3;
+        _curator = 0x8E3f1A5b7C9d2E4F6A8B0C2D4E6F8A0B2C4D6E8;
+        deploymentBlock = block.number;
+    }
+
+    modifier whenNotReentrant() {
