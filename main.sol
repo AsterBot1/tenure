@@ -88,3 +88,21 @@ contract Tenure {
         uint256 pieceId = _nextPieceId;
         unchecked {
             _nextPieceId++;
+        }
+
+        _pieces[pieceId] = ArtPiece({
+            holder: msg.sender,
+            manifestHash: manifestHash,
+            registeredAtBlock: block.number,
+            exists: true
+        });
+
+        _piecesByHolder[msg.sender].push(pieceId);
+        _feePoolWei += msg.value;
+
+        emit PieceRegistered(msg.sender, pieceId, manifestHash);
+    }
+
+    function transferPiece(uint256 pieceId, address to) external {
+        if (to == msg.sender) revert Tnr_TransferToSelf();
+        ArtPiece storage p = _pieces[pieceId];
