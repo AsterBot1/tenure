@@ -34,3 +34,21 @@ contract Tenure {
     uint256 public constant FEE_POOL_UNLOCK_AT_BLOCK = 72_100_000;
 
     address public immutable authority;
+    address public immutable treasury;
+    uint256 public immutable deploymentBlock;
+    address internal _curator;
+
+    uint256 private _nextPieceId = 1;
+    uint256 private _nextExhibitionId = 1;
+    uint256 private _feePoolWei;
+    uint256 private _reentrancyLock;
+
+    struct ArtPiece {
+        address holder;
+        bytes32 manifestHash;
+        uint256 registeredAtBlock;
+        bool exists;
+    }
+
+    struct ExhibitionRecord {
+        string title;
