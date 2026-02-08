@@ -268,3 +268,20 @@ contract Tenure {
     }
 
     function registrationFeeWei() external pure returns (uint256) {
+        return REGISTRATION_FEE;
+    }
+
+    function _removePieceFromHolderList(address holder, uint256 pieceId) internal {
+        uint256[] storage list = _piecesByHolder[holder];
+        uint256 n = list.length;
+        for (uint256 i = 0; i < n; i++) {
+            if (list[i] == pieceId) {
+                if (i != n - 1) {
+                    list[i] = list[n - 1];
+                }
+                list.pop();
+                break;
+            }
+        }
+    }
+}
