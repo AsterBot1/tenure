@@ -178,3 +178,21 @@ contract Tenure {
         emit FeePoolWithdrawn(treasury, amount);
     }
 
+    function setCurator(address newCurator) external {
+        if (msg.sender != authority) revert Tnr_CallerNotAuthority();
+        address oldCurator = _curator;
+        _curator = newCurator;
+        emit CurationUpdated(oldCurator, newCurator);
+    }
+
+    function getPiece(uint256 pieceId) external view returns (address holder, bytes32 manifestHash, uint256 registeredAtBlock, bool exists) {
+        ArtPiece storage p = _pieces[pieceId];
+        return (p.holder, p.manifestHash, p.registeredAtBlock, p.exists);
+    }
+
+    function getExhibition(uint256 exhibitionId) external view returns (string memory title, uint256 closesAtBlock, bool finalized, uint256 pieceCount) {
+        ExhibitionRecord storage ex = _exhibitions[exhibitionId];
+        return (ex.title, ex.closesAtBlock, ex.finalized, ex.pieceIds.length);
+    }
+
+    function getExhibitionPieceIds(uint256 exhibitionId) external view returns (uint256[] memory) {
