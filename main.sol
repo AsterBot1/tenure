@@ -142,3 +142,21 @@ contract Tenure {
         ExhibitionRecord storage ex = _exhibitions[exhibitionId];
         if (ex.closesAtBlock == 0) revert Tnr_ExhibitionDoesNotExist();
         if (ex.finalized) revert Tnr_ExhibitionAlreadyFinalized();
+        if (block.number >= ex.closesAtBlock) revert Tnr_ExhibitionAlreadyFinalized();
+        if (!_pieces[pieceId].exists) revert Tnr_PieceDoesNotExist();
+        if (_exhibitionContainsPiece[exhibitionId][pieceId]) revert Tnr_PieceNotInExhibition();
+
+        ex.pieceIds.push(pieceId);
+        _exhibitionContainsPiece[exhibitionId][pieceId] = true;
+
+        emit PieceIncludedInExhibition(exhibitionId, pieceId);
+    }
+
+    function finalizeExhibition(uint256 exhibitionId) external {
+        if (msg.sender != _curator) revert Tnr_CallerNotCurator();
+        ExhibitionRecord storage ex = _exhibitions[exhibitionId];
+        if (ex.closesAtBlock == 0) revert Tnr_ExhibitionDoesNotExist();
+        if (ex.finalized) revert Tnr_ExhibitionAlreadyFinalized();
+        if (block.number < ex.closesAtBlock) revert Tnr_ExhibitionNotFinalized();
+
+        ex.finalized = true;
