@@ -214,3 +214,21 @@ contract Tenure {
     function feePoolBalance() external view returns (uint256) {
         return _feePoolWei;
     }
+
+    function isPieceInExhibition(uint256 exhibitionId, uint256 pieceId) external view returns (bool) {
+        return _exhibitionContainsPiece[exhibitionId][pieceId];
+    }
+
+    function totalRegisteredPieces() external view returns (uint256) {
+        return _nextPieceId > 1 ? _nextPieceId - 1 : 0;
+    }
+
+    function totalExhibitions() external view returns (uint256) {
+        return _nextExhibitionId > 1 ? _nextExhibitionId - 1 : 0;
+    }
+
+    function pieceHolder(uint256 pieceId) external view returns (address) {
+        return _pieces[pieceId].holder;
+    }
+
+    function pieceManifestHash(uint256 pieceId) external view returns (bytes32) {
