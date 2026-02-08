@@ -232,3 +232,21 @@ contract Tenure {
     }
 
     function pieceManifestHash(uint256 pieceId) external view returns (bytes32) {
+        return _pieces[pieceId].manifestHash;
+    }
+
+    function pieceRegisteredAtBlock(uint256 pieceId) external view returns (uint256) {
+        return _pieces[pieceId].registeredAtBlock;
+    }
+
+    function pieceExists(uint256 pieceId) external view returns (bool) {
+        return _pieces[pieceId].exists;
+    }
+
+    function exhibitionTitle(uint256 exhibitionId) external view returns (string memory) {
+        return _exhibitions[exhibitionId].title;
+    }
+
+    function exhibitionClosesAtBlock(uint256 exhibitionId) external view returns (uint256) {
+        return _exhibitions[exhibitionId].closesAtBlock;
+    }
