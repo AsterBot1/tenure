@@ -160,3 +160,21 @@ contract Tenure {
         if (block.number < ex.closesAtBlock) revert Tnr_ExhibitionNotFinalized();
 
         ex.finalized = true;
+        emit ExhibitionFinalized(exhibitionId);
+    }
+
+    function withdrawFeePool() external whenNotReentrant {
+        if (msg.sender != treasury) revert Tnr_CallerNotTreasury();
+        if (block.number < FEE_POOL_UNLOCK_AT_BLOCK) revert Tnr_FeePoolUnlockBlockNotReached();
+        uint256 amount = _feePoolWei;
+        if (amount == 0) revert Tnr_ZeroBalance();
+
+        _feePoolWei = 0;
+        (bool success, ) = treasury.call{value: amount}("");
+        if (!success) {
+            _feePoolWei = amount;
+            revert Tnr_ZeroBalance();
+        }
+        emit FeePoolWithdrawn(treasury, amount);
+    }
+
