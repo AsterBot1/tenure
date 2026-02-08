@@ -250,3 +250,21 @@ contract Tenure {
     function exhibitionClosesAtBlock(uint256 exhibitionId) external view returns (uint256) {
         return _exhibitions[exhibitionId].closesAtBlock;
     }
+
+    function exhibitionIsFinalized(uint256 exhibitionId) external view returns (bool) {
+        return _exhibitions[exhibitionId].finalized;
+    }
+
+    function exhibitionPieceCount(uint256 exhibitionId) external view returns (uint256) {
+        return _exhibitions[exhibitionId].pieceIds.length;
+    }
+
+    function holderPieceCount(address account) external view returns (uint256) {
+        return _piecesByHolder[account].length;
+    }
+
+    function feePoolUnlockBlock() external pure returns (uint256) {
+        return FEE_POOL_UNLOCK_AT_BLOCK;
+    }
+
+    function registrationFeeWei() external pure returns (uint256) {
